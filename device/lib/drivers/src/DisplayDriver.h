@@ -9,8 +9,10 @@
 // Resident driver wrapping M5.Display for Lua access.
 // Dual role: Resident::Driver (Lua screen.* module via sprite buffer)
 //          + Resident::StatusDisplay (connection state text, direct to display)
+// StatusDisplay is itself a Driver subclass (resident 0.5), so inheriting it
+// alone gives us both roles without a diamond back to Resident::Extension.
 // When an app is running, status display calls are suppressed.
-class DisplayDriver : public Resident::Driver, public Resident::StatusDisplay {
+class DisplayDriver : public Resident::StatusDisplay {
 public:
   const char* name() const override { return "screen"; }
 

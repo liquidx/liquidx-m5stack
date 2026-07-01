@@ -1,3 +1,6 @@
 .resident-device-id
 .pio
 .DS_Store
+
+# local checkouts
+external/

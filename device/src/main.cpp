@@ -38,15 +38,16 @@ Resident::SandboxConfig makeConfig() {
     cfg.deviceType    = "stick";
     cfg.extensions    = {&displayDriver, &imuDriver, &buzzerDriver, &buttonDriver, &micDriver, &httpDriver};
     cfg.statusDisplay = &displayDriver;
+    cfg.persistApps = true;
 
     // Courier::Config has a constructor with default args, so designated
     // initializers (.host = ...) don't compile under strict ESP-IDF builds.
     // Use direct field assignment.
     //
-    // Courier::Config courier;
-    // courier.host = RESIDENT_HOST;
-    // courier.port = RESIDENT_PORT;
-    // cfg.network  = courier;
+    Courier::Config courier;
+    courier.host = RESIDENT_HOST;
+    courier.port = RESIDENT_PORT;
+    cfg.network  = courier;
 
     return cfg;
 }
