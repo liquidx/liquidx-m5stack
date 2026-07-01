@@ -5,6 +5,7 @@
 #include "BuzzerDriver.h"
 #include "PushButtonsDriver.h"
 #include "MicDriver.h"
+#include "HttpDriver.h"
 
 // Default endpoint: the canonical Resident relay. Devs can self-host by
 // changing RESIDENT_HOST below (or extending Courier with a config portal).
@@ -30,11 +31,12 @@ IMUDriver imuDriver;
 BuzzerDriver buzzerDriver{255};
 PushButtonsDriver buttonDriver{buttonConfig};
 MicDriver micDriver;
+HttpDriver httpDriver;
 
 Resident::SandboxConfig makeConfig() {
     Resident::SandboxConfig cfg;
     cfg.deviceType    = "stick";
-    cfg.extensions    = {&displayDriver, &imuDriver, &buzzerDriver, &buttonDriver, &micDriver};
+    cfg.extensions    = {&displayDriver, &imuDriver, &buzzerDriver, &buttonDriver, &micDriver, &httpDriver};
     cfg.statusDisplay = &displayDriver;
 
     // Courier::Config has a constructor with default args, so designated
