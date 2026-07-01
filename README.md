@@ -3,7 +3,7 @@ Apps developed using the [Resident](https://resident.inanimate.tech/#try-it-now)
 
 # How does this work?
 
-This repo does not contain the Resident library and repo, instead it is a fork of the `resident/examples/m5stack-demo` in order to reuse their built device drives.
+This repo does not contain the Resident library and repo, instead it is a fork of the `resident/examples/m5stack-demo` in order to reuse their built device drivers.
 
 # How to do things?
 
@@ -21,7 +21,6 @@ This repo does not contain the Resident library and repo, instead it is a fork o
 4. Once WiFi is up, it opens a WebSocket to resident.inanimate.tech (or your RESIDENT_HOST) and the status display (your DisplayDriver) cycles WiFi → Connecting → Connected → <8-char device ID>.
 5. From there, push apps with /resident:push-app --device-id <id> some-app.lua or ./send-app.sh --device-id <id> device-apps/hello.lua (device ID is also cached in .resident-device-id after the skill talks to it once).
 
-
 ## Build Dependencies
 
 Using Platform IO, the dependencies are downloaded by `pio` to `device/.pio` and then the whole firmware is built from there. So there is not need to checkout any of the dependencies unless we are modifying it.
@@ -32,3 +31,14 @@ On claude code, run `/resident:push-app <name of the app>` or
 `./send-app.sh device-apps/<name-of-app>.lua` 
 
 Ensure the device ID is in `resident/.resident-device-id`.
+
+## Auto-load last app
+
+Since resident 0.5, it will auto-load the last app that was uploaded after a 20s countdown.
+
+## Physical buttons on the M5StickS3.
+
+- Power Button (small button on the side of the device)
+  - Double press to power off
+  - Long press to boot or reboot.
+  - Single press to turn on OR reboot

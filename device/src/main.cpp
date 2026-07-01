@@ -55,42 +55,25 @@ Resident::SandboxConfig makeConfig() {
 Resident::Sandbox sandbox{makeConfig()};
 
 void setup() {
-    Serial.begin(115200);
-    delay(2000);  // Wait for USB CDC on M5StickS3; harmless on M5Stick
-    auto cfg = M5.config();
-    M5.begin(cfg);
-    M5.Display.setRotation(1);
+  Serial.begin(115200);
+  delay(2000);  // Wait for USB CDC on M5StickS3; harmless on M5Stick
+  auto cfg = M5.config();
+  M5.begin(cfg);
+  M5.Display.setRotation(1);
 
-    // Override the default /agents/<type>-agent/<deviceId> path with the
-    // canonical /devices/<deviceId> path used by resident.inanimate.tech.
-    sandbox.onTransportsWillConnect([]() {
-        String wsPath = String("/devices/") + sandbox.getDeviceId();
-        sandbox.ws().setEndpoint(RESIDENT_HOST, RESIDENT_PORT, wsPath.c_str());
-    });
+  // Override the default /agents/<type>-agent/<deviceId> path with the
+  // canonical /devices/<deviceId> path used by resident.inanimate.tech.
+  sandbox.onTransportsWillConnect([]() {
+      String wsPath = String("/devices/") + sandbox.getDeviceId();
+      sandbox.ws().setEndpoint(RESIDENT_HOST, RESIDENT_PORT, wsPath.c_str());
+  });
 
-    // On first successful connection, replace the StatusDisplay's "Connected"
-    // text with a sandbox app that shows the device ID prominently (so the
-    // user knows what to push to). A real app sent via push-app or
-    // send-app.sh will replace this.
-    //
-    // Function-local static guards against re-firing on reconnect.
-    sandbox.onConnected([]() {
-        static bool loaded = false;
-        if (loaded) return;
-        loaded = true;
-        String app = "function init(ctx)\n"
-                     "  screen.clear()\n"
-                     "  screen.text(10, 15, 'Resident', 3)\n"
-                     "  screen.text(10, 60, 'Device ID:', 2)\n"
-                     "  screen.text(10, 90, '";
-        app += sandbox.getDeviceId();
-        app += "', 3, 0, 255, 0)\n"
-               "  screen.flip()\n"
-               "end\n";
-        sandbox.loadApp(app.c_str());
-    });
+  // No bootstrap app on connect: Resident now shows the device ID itself
+  // (the boot countdown screen) and auto-restores the last persisted app.
+  // A hand-rolled onConnected loadApp here would cancel that restore and
+  // overwrite the persisted app in NVS.
 
-    sandbox.setup();
+  sandbox.setup();
 }
 
 void loop() {
